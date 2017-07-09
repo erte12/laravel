@@ -13,7 +13,7 @@ class PostsController extends Controller
         $this->middleware('post_permission', ['only' => [
             'edit',
             'update',
-            'destroy',
+            'destroy'
             ]
         ]);
     }
