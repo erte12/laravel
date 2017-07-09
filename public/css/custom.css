@@ -1,0 +1,14 @@
+.dropdown-menu form button {
+	width: 100%;
+	text-align: left;
+	border: none;
+	background-color: #FFFFFF;
+	font-size: 14px;
+	color: #333333;
+	padding: 3px 20px;
+}
+
+.dropdown-menu form button:hover {
+	background-color: #F5F5F5;
+	color: #262626;
+}
