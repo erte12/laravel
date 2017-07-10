@@ -14,6 +14,12 @@
                 @include('posts.include.single')
             @endforeach
 
+            <div class="row text-center">
+                <div class="col-md-12">
+                    {{ $posts }}
+                </div>
+            </div>
+
 
         </div>
     </div>
