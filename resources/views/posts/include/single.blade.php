@@ -15,10 +15,14 @@
             </div>
         </div>
 
-        <div class="row">
+        <div id="post_{{ $post->id }}" class="row">
             <div class="col-md-12">
                 {{ $post->content }}
             </div>
         </div>
+        <hr>
+            @if (Auth::check())
+                @include ('comments.add')
+            @endif
     </div>
 </div>
