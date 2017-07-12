@@ -22,7 +22,19 @@
         </div>
         <hr>
             @if (Auth::check())
-                @include ('comments.add')
+            <div class="row">
+                <div class="col-md-12">
+                    @include ('comments.add')
+                </div>
+            </div>
             @endif
+
+            @foreach ($post->comment as $comment)
+                @include('comments.include.single')
+            @endforeach
+
+
+
+
     </div>
 </div>
