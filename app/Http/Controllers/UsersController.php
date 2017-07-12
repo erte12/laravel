@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -27,7 +28,8 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-        $posts = $user->posts()->orderBy('created_at', 'desc')->get();
+
+        $posts = Post::with('comment.user')->where('user_id', $id)->orderBy('created_at', 'desc')->get();
         return view('users.show', compact('user', 'posts'));
     }
 

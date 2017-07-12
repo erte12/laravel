@@ -82,6 +82,15 @@ class DatabaseSeeder extends Seeder
 		        'created_at' => $faker->dateTimeThisYear($max = 'now'),
 		    	]);
         	}
+
+    		for($comment_id = 1; $comment_id <= $faker->numberBetween($min = 0, $max = 5); $comment_id++) {
+    		    DB::table('comments')->insert([
+    			'post_id' => $faker->numberBetween(1, 10),
+		        'user_id' => $faker->numberBetween(1, $number_of_users),
+		        'content' => $faker->sentence($nbWords = 3, $variableNbWords = true),
+		        'created_at' => $faker->dateTimeThisYear($max = 'now'),
+		    	]);
+        	}
         }
     }
 }

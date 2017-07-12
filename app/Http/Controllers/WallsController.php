@@ -25,7 +25,7 @@ class WallsController extends Controller
     		$friends_id_array[] = $friend->id;
     	}
 
-    	$posts = Post::whereIn('user_id', $friends_id_array)
+    	$posts = Post::with('comment.user')->whereIn('user_id', $friends_id_array)
     	->orderBy('created_at', 'desc')
     	->paginate(5);
 

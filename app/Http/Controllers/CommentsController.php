@@ -8,6 +8,17 @@ use App\Comment;
 
 class CommentsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('comment_permission', ['only' => [
+            'edit',
+            'update',
+            'destroy'
+            ]
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -16,9 +27,6 @@ class CommentsController extends Controller
      */
     public function store(Request $request)
     {
-        // var_dump('$request->comment_content_post_' . $request->post_id);
-        // exit;
-
         $content = 'comment_content_post_' . $request->post_id;
 
         $this->validate($request, [
@@ -46,7 +54,8 @@ class CommentsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $comment = Comment::findOrFail($id);
+        return view('comments.edit', compact('comment'));
     }
 
     /**
@@ -58,7 +67,18 @@ class CommentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'comment_content' => 'required|min:5',
+            ], [
+            'required' => 'Pole jest wymagane',
+            'min' => 'Pole musi mieć minimum :min znaki',
+            ]);
+
+        $comment = Comment::find($id)->update([
+            'content' => $request->comment_content,
+        ]);
+
+        return back();
     }
 
     /**
@@ -69,6 +89,7 @@ class CommentsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Comment::findOrFail($id)->delete();
+        return back();
     }
 }
