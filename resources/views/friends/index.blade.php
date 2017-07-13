@@ -11,6 +11,7 @@
                     {{ $friends->count() }}
                 </span>
                 </div>
+
                 <div class="panel-body">
                     <div class="row">
                         @foreach ($friends as $friend)

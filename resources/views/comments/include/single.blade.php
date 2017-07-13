@@ -11,10 +11,9 @@
 	    </div>
 
 	    <div class="col-xs-11">
+            <a href="{{ url('users/' . $comment->user->id) }}">{{ $comment->user->name }}</a> <br />
 			{{ $comment->content }}
 	    </div>
 
     </div>
 </div>
-
-

@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 
 use Faker\Factory as Faker;
 use App\Friends;
+use App\Post;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,20 +18,31 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         $faker = Faker::create('pl_PL');
         $number_of_users = 20;
+        $comments_per_post = 5;
+
+        DB::table('roles')->insert([
+            'id' => 1,
+            'name' => 'admin',
+        ]);
+
+        DB::table('roles')->insert([
+            'id' => 2,
+            'name' => 'user',
+        ]);
 
         for ($user_id=1; $user_id <= $number_of_users; $user_id++) {
-
         	if ($user_id == 1) {
 
         	    DB::table('users')->insert([
 					'name' => 'Bartek Iskrzycki',
 					'email' => 'bartek.iskrzycki@gmail.com',
 					'sex' => 'm',
+                    'role_id' => 1,
 					'password' => bcrypt('pass'),
 			    ]);
 
         	} else {
-
+                //========================== USERS ==========================
 	        	$sex = $faker->randomElement(['m','f']);
 
 	        	switch ($sex) {
@@ -48,11 +60,13 @@ class DatabaseSeeder extends Seeder
 			        'name' => $name,
 			        'email' => str_replace('-', '', str_slug($name)) . '@' . $faker->safeEmailDomain(),
 			        'sex' => $sex,
+                    'role_id' => 2,
 			        'avatar' => $avatar,
 			        'password' => bcrypt('pass'),
 			    ]);
         	}
 
+            //========================== FRIENDS ==========================
         	for($i = 1; $i <= $faker->numberBetween($min = 0, $max = $number_of_users - 1); $i++) {
 
         		$friend_id = $faker->numberBetween($min = 1, $max = $number_of_users);
@@ -75,22 +89,25 @@ class DatabaseSeeder extends Seeder
         		}
         	}
 
-        	for($post_id = 1; $post_id <= $faker->numberBetween($min = 0, $max = 10); $post_id++) {
+        	for($post_iteration = 1; $post_iteration <= $faker->numberBetween($min = 1, $max = 5); $post_iteration++) {
     		    DB::table('posts')->insert([
 		        'user_id' => $user_id,
 		        'content' => $faker->sentence($nbWords = 3, $variableNbWords = true),
 		        'created_at' => $faker->dateTimeThisYear($max = 'now'),
 		    	]);
         	}
+        }
 
-    		for($comment_id = 1; $comment_id <= $faker->numberBetween($min = 0, $max = 5); $comment_id++) {
-    		    DB::table('comments')->insert([
-    			'post_id' => $faker->numberBetween(1, 10),
-		        'user_id' => $faker->numberBetween(1, $number_of_users),
-		        'content' => $faker->sentence($nbWords = 3, $variableNbWords = true),
-		        'created_at' => $faker->dateTimeThisYear($max = 'now'),
-		    	]);
-        	}
+        $post_number_in_database = Post::all()->count();
+        for($post_id = 1; $post_id <= $post_number_in_database; $post_id++) {
+            for ($comment_iteration=1; $comment_iteration <= $faker->numberBetween(1, $comments_per_post); $comment_iteration++) {
+                DB::table('comments')->insert([
+                    'post_id' => $post_id,
+                    'user_id' => $faker->numberBetween(1, $number_of_users),
+                    'content' => $faker->sentence($nbWords = 5, $variableNbWords = true),
+                    'created_at' => $faker->dateTimeThisYear($max = 'now'),
+                ]);
+            }
         }
     }
 }
