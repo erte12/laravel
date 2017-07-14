@@ -6,7 +6,7 @@
                 <img src="{{ asset('user-avatar/' . $post->user->id . '/50') }}" class="img-responsive pull-left" style="margin-right: 6px; margin-bottom: 6px">
                 <a class="pull-left" href="{{ url('/users/' . $post->user->id) }}"><strong>{{ $post->user->name }}</strong></a>
 
-                @if ($post->user->id == Auth::id())
+                @if ( belongs_to_user($post->user->id || is_admin()) )
                     @include('posts.include.dropdown_menu')
                 @endif
 

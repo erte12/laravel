@@ -35,6 +35,15 @@ function is_sender($user_id, $friend_id)
 	if($query) {
 		return true;
 	}
-
 	return false;
+}
+
+function belongs_to_user($user_id)
+{
+	return Auth::check() && $user_id == Auth::id();
+}
+
+function is_admin()
+{
+	return Auth::check() && Auth::user()->role->name === 'admin';
 }

@@ -22,7 +22,7 @@ class CheckCommentPermission
             'user_id' => Auth::id(),
         ])->exists();
 
-        if(! $comment_exists) {
+        if(! $comment_exists && ! is_admin() ) {
             abort(403, 'Brak dostępu');
         }
 

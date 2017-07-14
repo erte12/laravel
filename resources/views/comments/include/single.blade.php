@@ -2,7 +2,7 @@
     <div class="col-md-12">
     	<hr>
 
-        @if ($comment->user->id == Auth::id())
+        @if ( belongs_to_user($comment->user->id || is_admin()) )
             @include('comments.include.dropdown_menu')
         @endif
 

@@ -96,9 +96,9 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        $friends = Post::where([
-            'id' => $id,
-        ])->delete();
+        $post = Post::findOrFail($id);
+        $post->comment()->delete();
+        $post->delete();
 
         return back();
     }
