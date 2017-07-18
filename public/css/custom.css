@@ -12,3 +12,12 @@
 	background-color: #F5F5F5;
 	color: #262626;
 }
+
+.trashed {
+	opacity: .3;
+	transition: opacity .5s
+}
+
+.trashed:hover {
+	opacity: 1;
+}

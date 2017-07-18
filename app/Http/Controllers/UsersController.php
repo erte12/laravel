@@ -29,7 +29,12 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $posts = Post::with('comment.user')->where('user_id', $id)->orderBy('created_at', 'desc')->get();
+        if(is_admin()) {
+            $posts = Post::with('comment.user')->withTrashed()->where('user_id', $id)->orderBy('created_at', 'desc')->get();
+        } else {
+            $posts = Post::with('comment.user')->where('user_id', $id)->orderBy('created_at', 'desc')->get();
+        }
+
         return view('users.show', compact('user', 'posts'));
     }
 

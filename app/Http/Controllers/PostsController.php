@@ -47,11 +47,16 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        $post = Post::find($id);
-        return view('posts.show', compact('post'));
-    }
+     public function show($id)
+     {
+         if(is_admin()) {
+             $post = Post::find($id)->withTrashed();
+         } else {
+             $post = Post::find($id);
+         }
+
+         return view('posts.show', compact('post'));
+     }
 
     /**
      * Show the form for editing the specified resource.
@@ -61,7 +66,12 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        $post = Post::findOrFail($id);
+        if(is_admin()) {
+            $post = Post::withTrashed()->findOrFail($id);
+        } else {
+            $post = Post::findOrFail($id);
+        }
+
         echo view('posts.edit', compact('post'));
     }
 
@@ -81,9 +91,18 @@ class PostsController extends Controller
             'min' => 'Pole musi mieć minimum :min znaki',
             ]);
 
-        $post = Post::find($id)->update([
-            'content' => $request->post_content,
-        ]);
+        if(is_admin()) {
+            $post = Post::withTrashed()
+            ->find($id)
+            ->update([
+                'content' => $request->post_content,
+            ]);
+        } else {
+            $post = Post::find($id)
+            ->update([
+                'content' => $request->post_content,
+            ]);
+        }
 
         return back();
     }
@@ -96,9 +115,15 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);
-        $post->comment()->delete();
-        $post->delete();
+        $post = Post::withTrashed()->findOrFail($id);
+
+        if(is_admin() && $post->trashed()) {
+            $post->forceDelete();
+            $post->comment()->forceDelete();
+        } else {
+            $post->delete();
+            $post->comment()->delete();
+        }
 
         return back();
     }

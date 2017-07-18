@@ -9,6 +9,9 @@ use App\Comment;
 class CommentsController extends Controller
 {
 
+    /**
+     * Construct with middleware
+     */
     public function __construct()
     {
         $this->middleware('comment_permission', ['only' => [
@@ -54,7 +57,12 @@ class CommentsController extends Controller
      */
     public function edit($id)
     {
-        $comment = Comment::findOrFail($id);
+        if(is_admin()) {
+            $comment = Comment::withTrashed()->findOrFail($id);
+        } else {
+            $comment = Comment::findOrFail($id);
+        }
+
         return view('comments.edit', compact('comment'));
     }
 
@@ -74,9 +82,18 @@ class CommentsController extends Controller
             'min' => 'Pole musi mieć minimum :min znaki',
             ]);
 
-        $comment = Comment::find($id)->update([
-            'content' => $request->comment_content,
-        ]);
+        if(is_admin()) {
+            $post = Comment::withTrashed()
+            ->find($id)
+            ->update([
+                'content' => $request->comment_content,
+            ]);
+        } else {
+            $post = Comment::find($id)
+            ->update([
+                'content' => $request->comment_content,
+            ]);
+        }
 
         return back();
     }
@@ -89,8 +106,13 @@ class CommentsController extends Controller
      */
     public function destroy($id)
     {
-        $comment = Comment::findOrFail($id);
-        $comment->delete();
+        $comment = Comment::withTrashed()->findOrFail($id);
+        if(is_admin() && $comment->trashed()) {
+            $comment->forceDelete();
+        } else {
+            $comment->delete();
+        }
+
         return back();
     }
 }
