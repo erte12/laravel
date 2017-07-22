@@ -38,4 +38,6 @@ Route::get('/wall', 'WallsController@index')->name('wall');
 Route::resource('/comments', 'CommentsController', ['except' => ['index', 'create', 'show']]);
 
 Route::post('/likes', 'LikesController@add')->name('likes.add');
-Route::delete('/likes/{like}', 'LikesController@delete')->name('likes.delete');
+Route::delete('/likes', 'LikesController@delete')->name('likes.delete');
+
+Route::get('/notifications', 'NotificationsController@index')->name('notifications');

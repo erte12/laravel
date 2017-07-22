@@ -48,7 +48,9 @@
                             <li><a href="{{ route('login') }}">Zaloguj</a></li>
                             <li><a href="{{ route('register') }}">Zarejestruj</a></li>
                         @else
-
+                            <li><a href="{{ route('wall') }}">Tablica postów</a></li>
+                            <li><a href="{{ url('/users/' . Auth::id()) }}">Panel użytkownika</a></li>
+                            <li><a href="{{ route('notifications') }}">Powiadomienia {!! (auth()->user()->unreadNotifications->count() > 0) ? '<span class="label label-danger">' . auth()->user()->unreadNotifications->count() . '</span>' : '' !!}</a></li>
                             <li class="dropdown">
 
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -57,16 +59,6 @@
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a href="{{ url('/users/' . Auth::id()) }}">
-                                            Panel użytkownika
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ url('/wall') }}">
-                                            Tablica
-                                        </a>
-                                    </li>
                                     <li>
                                         <a href="{{ url('/users/' . Auth::id() . './edit') }}">
                                             Edytuj dane

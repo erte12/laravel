@@ -19,8 +19,14 @@ class LikesController extends Controller
     	return back();
     }
 
-    public function destroy($id)
+    public function delete(Request $request)
     {
-
+        Like::where([
+    		'user_id' => Auth::id(),
+    		'post_id' => $request->post_id,
+    		'comment_id' => $request->comment_id,
+    	])->delete();
+        
+        return back();
     }
 }
