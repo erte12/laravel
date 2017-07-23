@@ -41,3 +41,4 @@ Route::post('/likes', 'LikesController@add')->name('likes.add');
 Route::delete('/likes', 'LikesController@delete')->name('likes.delete');
 
 Route::get('/notifications', 'NotificationsController@index')->name('notifications');
+Route::patch('/notifications/{notification}', 'NotificationsController@update')->name('notifications.update');
