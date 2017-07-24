@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class FriendRequest extends Notification
+class FriendRequestAccepted extends Notification
 {
     use Queueable;
 
@@ -54,8 +54,15 @@ class FriendRequest extends Notification
      */
     public function toArray($notifiable)
     {
+        $url = url('users/' . auth()->id());
+        if(auth()->user()->sex === 'm') {
+            $message = 'Użytkownik <a href="' . $url . '">'. auth()->user()->name .'</a> przyjął Twoje zaproszenie!';
+        } elseif (auth()->user()->sex === 'f') {
+            $message = 'Użytkowniczka <a href="' . $url . '">'. auth()->user()->name .'</a> przyjęła Twoje zaproszenie!';
+        }
+
         return [
-            'message' => 'Masz zaproszenie do znajomych!',
+            'message' => $message,
         ];
     }
 }
