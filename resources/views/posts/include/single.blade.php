@@ -15,12 +15,12 @@
             </div>
         </div>
 
-        <div id="post_{{ $post->id }}" class="row">
+        <div id="post_id{{ $post->id }}" class="row">
             <div class="col-md-12">
                 {{ $post->content }}
             </div>
         </div>
-        
+
         @include('posts.include.likes')
 
         <hr>

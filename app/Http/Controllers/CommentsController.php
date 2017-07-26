@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Comment;
+use App\User;
+use App\Post;
+use App\Notifications\PostCommented;
 
 class CommentsController extends Controller
 {
@@ -33,19 +36,22 @@ class CommentsController extends Controller
         $content = 'comment_content_post_' . $request->post_id;
 
         $this->validate($request, [
-            $content => 'required|min:5',
+            $content => 'required|min:3',
             ], [
             'required' => 'Pole jest wymagane',
             'min' => 'Pole musi mieć minimum :min znaki',
         ]);
 
+        $comment = Comment::create([
+            'user_id' => Auth::id(),
+            'post_id' => $request->post_id,
+            'content' => $request->$content,
+        ]);
 
-        $post = new Comment();
-        $post->user_id = Auth::id();
-        $post->post_id = $request->post_id;
-        $post->content = $request->$content;
-        $post->save();
-
+        if($comment->post->user_id != Auth::id()) {
+            User::findOrFail($comment->post->user_id)->notify(new PostCommented($comment->post->user_id, $comment->id));
+        }
+        
         return back();
     }
 

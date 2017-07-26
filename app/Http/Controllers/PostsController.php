@@ -50,7 +50,7 @@ class PostsController extends Controller
      public function show($id)
      {
          if(is_admin()) {
-             $post = Post::find($id)->withTrashed();
+             $post = Post::find($id)->withTrashed()->first();
          } else {
              $post = Post::find($id);
          }
@@ -67,7 +67,7 @@ class PostsController extends Controller
     public function edit($id)
     {
         if(is_admin()) {
-            $post = Post::withTrashed()->findOrFail($id);
+            $post = Post::withTrashed()->findOrFail($id)->first();
         } else {
             $post = Post::findOrFail($id);
         }
