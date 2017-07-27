@@ -7,18 +7,20 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class FriendRequestSent extends Notification
+class Liked extends Notification
 {
     use Queueable;
+
+    protected $content;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($content)
     {
-        //
+        $this->content = $content;
     }
 
     /**
@@ -29,7 +31,7 @@ class FriendRequestSent extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['database'];
     }
 
     /**
@@ -41,8 +43,9 @@ class FriendRequestSent extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('Dostałeś zaproszenie do znajomych!')
-                    ->action('Odwiedź profil użytkownika', url('users/' . auth()->id()));
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
@@ -53,11 +56,16 @@ class FriendRequestSent extends Notification
      */
     public function toArray($notifiable)
     {
-        $url = url('users/' . auth()->id());
-        if(auth()->user()->sex === 'm') {
-            $message = 'Masz zaproszenie od użytkownika <a href="' . $url . '">'. auth()->user()->name .'</a>!';
-        } elseif (auth()->user()->sex === 'f') {
-            $message = 'Masz zaproszenie od użytkowniczki <a href="' . $url . '">'. auth()->user()->name .'</a>!';
+        $user_link = '<a href="' . url('users/' . auth()->id()) . '">' . auth()->user()->name . '</a>';
+
+        if(! is_null($this->content['post'])) {
+            $post_link = '<a href="' . url('posts/' . $this->content['post']->id) . '">Twój post</a>';
+            $message = 'Użytkownik ' . $user_link . ' polubił ' . $post_link;
+        }
+
+        if(! is_null($this->content['comment'])) {
+            $post_link = '<a href="' . url('posts/' . $this->content['comment']->post->id . '#comment_id' . $this->content['comment']->id) . '">Twój komentarz</a>';
+            $message = 'Użytkownik ' . $user_link . ' polubił ' . $post_link;
         }
 
         return [
